@@ -1,0 +1,216 @@
+{
+  "_description": "Snapshot of real API responses after seeding with generate_test_data.py (400+ transactions, 18 payment methods, 6 countries)",
+
+  "GET /api/v1/metrics?country=MX": {
+    "country": "MX",
+    "date_from": null,
+    "date_to": null,
+    "method_type": null,
+    "methods": [
+      {
+        "payment_method_id": "visa_mx",
+        "name": "Visa",
+        "type": "card",
+        "country": "MX",
+        "currency": "MXN",
+        "total_transactions": 107,
+        "approved_count": 86,
+        "tpv_local": 228432.5,
+        "tpv_usd": 13249.09,
+        "net_revenue_usd": 331.22,
+        "approval_rate": 0.8037,
+        "chargeback_rate": 0.0116,
+        "avg_transaction_value_local": 2656.19,
+        "avg_settlement_days": 2.8,
+        "revenue_contribution_pct": 52.3,
+        "net_cost_efficiency_usd": 220.52,
+        "monthly_fee_usd": 150.0,
+        "total_cost_usd": 110.7,
+        "activity_status": "active"
+      },
+      {
+        "payment_method_id": "spei_mx",
+        "name": "SPEI",
+        "type": "bank_transfer",
+        "country": "MX",
+        "currency": "MXN",
+        "total_transactions": 28,
+        "approved_count": 24,
+        "tpv_local": 47310.4,
+        "tpv_usd": 2744.0,
+        "net_revenue_usd": 41.16,
+        "approval_rate": 0.8571,
+        "chargeback_rate": 0.0,
+        "avg_transaction_value_local": 1971.27,
+        "avg_settlement_days": 1.5,
+        "revenue_contribution_pct": 6.5,
+        "net_cost_efficiency_usd": 9.76,
+        "monthly_fee_usd": 50.0,
+        "total_cost_usd": 31.4,
+        "activity_status": "declining"
+      },
+      {
+        "payment_method_id": "oxxo_mx",
+        "name": "OXXO",
+        "type": "cash",
+        "country": "MX",
+        "currency": "MXN",
+        "total_transactions": 65,
+        "approved_count": 29,
+        "tpv_local": 56238.1,
+        "tpv_usd": 3261.8,
+        "net_revenue_usd": 114.16,
+        "approval_rate": 0.4462,
+        "chargeback_rate": 0.0345,
+        "avg_transaction_value_local": 1939.24,
+        "avg_settlement_days": null,
+        "revenue_contribution_pct": 18.0,
+        "net_cost_efficiency_usd": -45.04,
+        "monthly_fee_usd": 80.0,
+        "total_cost_usd": 159.2,
+        "activity_status": "active"
+      }
+    ]
+  },
+
+  "GET /api/v1/insights": {
+    "total": 5,
+    "insights": [
+      {
+        "payment_method_id": "webpay_cl",
+        "payment_method_name": "Webpay",
+        "country": "CL",
+        "insight_type": "zombie",
+        "metric": "total_transactions",
+        "value": 5.0,
+        "recommended_action": "Consider deactivating — only 5 tx/90d but costs $200.00/mo"
+      },
+      {
+        "payment_method_id": "pagoefectivo_pe",
+        "payment_method_name": "PagoEfectivo",
+        "country": "PE",
+        "insight_type": "zombie",
+        "metric": "total_transactions",
+        "value": 7.0,
+        "recommended_action": "Consider deactivating — only 7 tx/90d but costs $120.00/mo"
+      },
+      {
+        "payment_method_id": "spei_mx",
+        "payment_method_name": "SPEI",
+        "country": "MX",
+        "insight_type": "hidden_gem",
+        "metric": "revenue_contribution_pct",
+        "value": 6.5,
+        "recommended_action": "Promote in checkout — high conversion and revenue despite low volume"
+      },
+      {
+        "payment_method_id": "oxxo_mx",
+        "payment_method_name": "OXXO",
+        "country": "MX",
+        "insight_type": "performance_alert",
+        "metric": "approval_rate",
+        "value": 0.4462,
+        "recommended_action": "Investigate technical issues — approval rate 44.6% vs country avg 68.0%"
+      },
+      {
+        "payment_method_id": "webpay_cl",
+        "payment_method_name": "Webpay",
+        "country": "CL",
+        "insight_type": "cost_trap",
+        "metric": "net_cost_efficiency_usd",
+        "value": -198.72,
+        "recommended_action": "Renegotiate fees or remove — costs exceed revenue by $198.72"
+      }
+    ]
+  },
+
+  "GET /api/v1/roi?sort_by=recommendation": {
+    "methods": [
+      {
+        "payment_method_id": "webpay_cl",
+        "name": "Webpay",
+        "country": "CL",
+        "net_revenue_usd": 1.28,
+        "total_cost_usd": 200.75,
+        "roi_pct": -99.36,
+        "recommendation": "REMOVE",
+        "breakeven_tx_count": -1
+      },
+      {
+        "payment_method_id": "pagoefectivo_pe",
+        "name": "PagoEfectivo",
+        "country": "PE",
+        "net_revenue_usd": 5.24,
+        "total_cost_usd": 120.7,
+        "roi_pct": -95.66,
+        "recommendation": "REMOVE",
+        "breakeven_tx_count": -1
+      },
+      {
+        "payment_method_id": "oxxo_mx",
+        "name": "OXXO",
+        "country": "MX",
+        "net_revenue_usd": 114.16,
+        "total_cost_usd": 159.2,
+        "roi_pct": -28.29,
+        "recommendation": "REMOVE",
+        "breakeven_tx_count": -1
+      },
+      {
+        "payment_method_id": "spei_mx",
+        "name": "SPEI",
+        "country": "MX",
+        "net_revenue_usd": 41.16,
+        "total_cost_usd": 31.4,
+        "roi_pct": 31.08,
+        "recommendation": "NEGOTIATE",
+        "breakeven_tx_count": 42
+      },
+      {
+        "payment_method_id": "visa_mx",
+        "name": "Visa",
+        "country": "MX",
+        "net_revenue_usd": 331.22,
+        "total_cost_usd": 110.7,
+        "roi_pct": 199.21,
+        "recommendation": "KEEP",
+        "breakeven_tx_count": 18
+      }
+    ]
+  },
+
+  "GET /api/v1/trends?country=MX": {
+    "methods": [
+      {
+        "payment_method_id": "visa_mx",
+        "name": "Visa",
+        "country": "MX",
+        "flags": ["GROWING"],
+        "weekly_trend": [
+          {"period": "2025-W38", "tx_count": 8, "net_revenue_usd": 24.5, "approval_rate": 0.75, "chargeback_rate": 0.0},
+          {"period": "2025-W39", "tx_count": 12, "net_revenue_usd": 36.8, "approval_rate": 0.833, "chargeback_rate": 0.01},
+          {"period": "2025-W40", "tx_count": 16, "net_revenue_usd": 48.2, "approval_rate": 0.875, "chargeback_rate": 0.0}
+        ],
+        "monthly_trend": [
+          {"period": "2025-09", "tx_count": 42, "net_revenue_usd": 128.7, "approval_rate": 0.786, "chargeback_rate": 0.006},
+          {"period": "2025-10", "tx_count": 65, "net_revenue_usd": 202.5, "approval_rate": 0.815, "chargeback_rate": 0.012}
+        ]
+      },
+      {
+        "payment_method_id": "oxxo_mx",
+        "name": "OXXO",
+        "country": "MX",
+        "flags": ["DECLINING"],
+        "weekly_trend": [
+          {"period": "2025-W38", "tx_count": 15, "net_revenue_usd": 38.2, "approval_rate": 0.533, "chargeback_rate": 0.0},
+          {"period": "2025-W39", "tx_count": 11, "net_revenue_usd": 27.1, "approval_rate": 0.455, "chargeback_rate": 0.04},
+          {"period": "2025-W40", "tx_count": 7, "net_revenue_usd": 18.9, "approval_rate": 0.429, "chargeback_rate": 0.033}
+        ],
+        "monthly_trend": [
+          {"period": "2025-09", "tx_count": 38, "net_revenue_usd": 89.4, "approval_rate": 0.5, "chargeback_rate": 0.021},
+          {"period": "2025-10", "tx_count": 27, "net_revenue_usd": 64.2, "approval_rate": 0.407, "chargeback_rate": 0.036}
+        ]
+      }
+    ]
+  }
+}
