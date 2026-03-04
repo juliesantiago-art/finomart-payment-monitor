@@ -37,8 +37,7 @@ async def get_method_metrics(
     date_to: Optional[date] = Query(None),
     session: AsyncSession = Depends(get_session),
 ):
-    all_methods = await compute_metrics(session, date_from=date_from, date_to=date_to)
-    match = next((m for m in all_methods if m.payment_method_id == payment_method_id), None)
-    if not match:
+    methods = await compute_metrics(session, payment_method_id=payment_method_id, date_from=date_from, date_to=date_to)
+    if not methods:
         raise HTTPException(status_code=404, detail=f"Payment method '{payment_method_id}' not found")
-    return match
+    return methods[0]

@@ -122,30 +122,32 @@ def _detect_flags(weekly_points: list[TrendPoint]) -> list[str]:
     if len(weekly_points) < 2:
         return list(flags)
 
+    vol_changes: list[float] = []
+    ar_changes: list[float] = []
+
     for i in range(1, len(weekly_points)):
         prev = weekly_points[i - 1]
         curr = weekly_points[i]
 
-        # Volume change
-        if prev.tx_count > 0:
-            vol_change = (curr.tx_count - prev.tx_count) / prev.tx_count
-            if vol_change <= -0.20:
-                flags.add("DECLINING")
-            elif vol_change >= 0.20:
-                flags.add("GROWING")
+        vol_changes.append(
+            (curr.tx_count - prev.tx_count) / prev.tx_count if prev.tx_count > 0 else 0.0
+        )
+        ar_changes.append(
+            (curr.approval_rate - prev.approval_rate) / prev.approval_rate
+            if prev.approval_rate > 0
+            else 0.0
+        )
 
-        # Approval rate change
-        if prev.approval_rate > 0:
-            ar_change = (curr.approval_rate - prev.approval_rate) / prev.approval_rate
-            if ar_change <= -0.20:
-                flags.add("DECLINING")
-            elif ar_change >= 0.20:
-                flags.add("GROWING")
-
-        # Chargeback spike: doubles week-over-week
+        # Chargeback spike: doubles week-over-week (single occurrence is enough)
         if prev.chargeback_rate > 0 and curr.chargeback_rate >= prev.chargeback_rate * 2:
             flags.add("CHARGEBACK_SPIKE")
 
-    # Require two consecutive declining weeks (not just one)
-    # Already handled by scanning all pairs; DECLINING fires on first occurrence
+    # DECLINING/GROWING require two consecutive weeks of >20% change
+    for changes in (vol_changes, ar_changes):
+        for i in range(len(changes) - 1):
+            if changes[i] <= -0.20 and changes[i + 1] <= -0.20:
+                flags.add("DECLINING")
+            if changes[i] >= 0.20 and changes[i + 1] >= 0.20:
+                flags.add("GROWING")
+
     return sorted(flags)

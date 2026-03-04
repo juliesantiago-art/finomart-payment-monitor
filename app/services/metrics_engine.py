@@ -26,6 +26,7 @@ async def compute_metrics(
     date_from: Optional[date] = None,
     date_to: Optional[date] = None,
     method_type: Optional[str] = None,
+    payment_method_id: Optional[str] = None,
 ) -> list[PaymentMethodMetrics]:
     # Build base query filters
     tx_filters = []
@@ -44,6 +45,8 @@ async def compute_metrics(
         pm_query = pm_query.where(PaymentMethod.country == country)
     if method_type:
         pm_query = pm_query.where(PaymentMethod.type == method_type)
+    if payment_method_id:
+        pm_query = pm_query.where(PaymentMethod.id == payment_method_id)
 
     pm_result = await session.execute(pm_query)
     payment_methods = pm_result.scalars().all()
@@ -130,7 +133,8 @@ async def compute_metrics(
         total_cost = monthly_fee + per_tx_fee * total_tx
         net_cost_efficiency = net_rev - total_cost
 
-        # Activity status: active >50 tx/90d, declining 10-50, dormant <10
+        # Activity status based on tx count in the query window (use date_from/date_to for 90d window)
+        # active >50, declining 10–50, dormant <10
         if total_tx >= 50:
             activity_status = "active"
         elif total_tx >= 10:

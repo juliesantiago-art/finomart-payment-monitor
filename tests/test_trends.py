@@ -11,15 +11,17 @@ from tests.helpers import seed_payment_method, seed_transactions
 async def test_trend_declining_flag(session):
     await seed_payment_method(session, id="visa_mx", country="MX")
 
-    # Week 1: Monday Jan 6
+    # Three consecutive weeks of >20% volume drop to satisfy two-consecutive-weeks rule
     week1 = datetime(2025, 1, 6, tzinfo=timezone.utc)
-    # Week 2: Monday Jan 13 — volume drops 50%
     week2 = datetime(2025, 1, 13, tzinfo=timezone.utc)
+    week3 = datetime(2025, 1, 20, tzinfo=timezone.utc)
 
     await seed_transactions(session, "visa_mx", "MX", "MXN", count=10, status="approved",
                             usd_amount=10.0, net_revenue_usd=0.25, created_at=week1)
     await seed_transactions(session, "visa_mx", "MX", "MXN", count=4, status="approved",
                             usd_amount=10.0, net_revenue_usd=0.25, created_at=week2)
+    await seed_transactions(session, "visa_mx", "MX", "MXN", count=1, status="approved",
+                            usd_amount=10.0, net_revenue_usd=0.25, created_at=week3)
     await session.commit()
 
     trends = await compute_trends(session, country="MX")
@@ -31,13 +33,17 @@ async def test_trend_declining_flag(session):
 async def test_trend_growing_flag(session):
     await seed_payment_method(session, id="pix_br", country="BR")
 
+    # Three consecutive weeks of >20% volume growth to satisfy two-consecutive-weeks rule
     week1 = datetime(2025, 1, 6, tzinfo=timezone.utc)
     week2 = datetime(2025, 1, 13, tzinfo=timezone.utc)
+    week3 = datetime(2025, 1, 20, tzinfo=timezone.utc)
 
     await seed_transactions(session, "pix_br", "BR", "BRL", count=5, status="approved",
                             usd_amount=20.0, net_revenue_usd=0.30, created_at=week1)
     await seed_transactions(session, "pix_br", "BR", "BRL", count=10, status="approved",
                             usd_amount=20.0, net_revenue_usd=0.30, created_at=week2)
+    await seed_transactions(session, "pix_br", "BR", "BRL", count=20, status="approved",
+                            usd_amount=20.0, net_revenue_usd=0.30, created_at=week3)
     await session.commit()
 
     trends = await compute_trends(session, country="BR")
