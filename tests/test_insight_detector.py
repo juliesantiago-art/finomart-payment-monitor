@@ -85,12 +85,13 @@ def test_hidden_gem_detection():
 
 
 def test_performance_alert():
-    # Country avg approval = 0.80; alert_method at 0.55 (25pp below)
+    # Country avg = (0.40 + 0.80) / 2 = 0.60; threshold = 0.60 - 0.15 = 0.45
+    # oxxo at 0.40 is below 0.45 → alert fires
     alert = make_metric(
         payment_method_id="oxxo_mx",
         country="MX",
         total_transactions=60,
-        approval_rate=0.55,
+        approval_rate=0.40,
     )
     normal = make_metric(
         payment_method_id="visa_mx",

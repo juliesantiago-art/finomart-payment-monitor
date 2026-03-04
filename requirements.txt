@@ -25,3 +25,4 @@ testcontainers[postgres]==4.9.0
 
 # Utilities
 python-dateutil==2.9.0
+greenlet==3.2.5

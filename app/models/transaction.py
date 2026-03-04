@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -18,8 +21,8 @@ class Transaction(Base):
     net_revenue_usd: Mapped[float] = mapped_column(Float, default=0.0)    # computed at ingest
     status: Mapped[str] = mapped_column(String(16), nullable=False)        # approved/declined/pending/refunded
     chargeback_flag: Mapped[bool] = mapped_column(Boolean, default=False)
-    settlement_speed_days: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    fx_spread_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
+    settlement_speed_days: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    fx_spread_pct: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     installment_count: Mapped[int] = mapped_column(Integer, default=1)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 

@@ -1,7 +1,7 @@
 from datetime import date, datetime, timezone
 from typing import Optional
 
-from sqlalchemy import func, select
+from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.integration_cost import IntegrationCost
@@ -59,18 +59,21 @@ async def compute_metrics(
             Transaction.payment_method_id,
             func.count(Transaction.id).label("total_transactions"),
             func.sum(
-                func.cast(Transaction.status == "approved", float) * Transaction.amount
+                case((Transaction.status == "approved", Transaction.amount), else_=0.0)
             ).label("tpv_local"),
             func.sum(
-                func.cast(Transaction.status == "approved", float) * Transaction.usd_amount
+                case((Transaction.status == "approved", Transaction.usd_amount), else_=0.0)
             ).label("tpv_usd"),
             func.sum(
-                func.cast(Transaction.status == "approved", float) * Transaction.net_revenue_usd
+                case((Transaction.status == "approved", Transaction.net_revenue_usd), else_=0.0)
             ).label("net_revenue_usd"),
-            func.sum(func.cast(Transaction.status == "approved", float)).label("approved_count"),
             func.sum(
-                func.cast(
-                    (Transaction.status == "approved") & (Transaction.chargeback_flag == True), float
+                case((Transaction.status == "approved", 1), else_=0)
+            ).label("approved_count"),
+            func.sum(
+                case(
+                    ((Transaction.status == "approved") & (Transaction.chargeback_flag == True), 1),
+                    else_=0,
                 )
             ).label("chargeback_count"),
             func.avg(Transaction.settlement_speed_days).label("avg_settlement_days"),
